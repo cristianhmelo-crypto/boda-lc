@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>L&amp;C · 13 · 11 · 2026</title>
+  <meta name="description" content="Las fotos de la cabina">
+  <meta name="theme-color" content="#F4EDE2">
+  <link rel="icon" href="logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #F4EDE2;
+      --paper-2: #FBF7F0;
+      --ink: #3F3A36;
+      --soft: #6E625A;
+      --terracotta: #B9694C;
+      --terracotta-dark: #9E5539;
+      --gold: #C8A15E;
+      --serif: "Cormorant Garamond", Georgia, serif;
+      --sans: Montserrat, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    html { background: var(--paper); }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(ellipse at 50% 0%, #FBF8F2 0%, var(--paper) 55%, #EDE3D3 100%) fixed;
+      color: var(--ink);
+      font-family: var(--sans);
+    }
+
+    header {
+      padding: 36px 16px 8px;
+      text-align: center;
+    }
+
+    header img { width: 150px; max-width: 45vw; }
+
+    .date {
+      margin: 10px 0 0;
+      font-size: 13px;
+      letter-spacing: 6px;
+      color: var(--soft);
+    }
+
+    .ornament { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 18px 0 0; }
+    .ornament i { width: 70px; height: 1px; background: linear-gradient(90deg, transparent, var(--gold)); }
+    .ornament i:last-child { transform: scaleX(-1); }
+    .ornament b { width: 8px; height: 8px; border: 1px solid var(--gold); transform: rotate(45deg); }
+
+    main { max-width: 1100px; margin: 0 auto; padding: 8px 16px 64px; }
+
+    h1 {
+      margin: 22px 0 6px;
+      text-align: center;
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 500;
+      font-size: clamp(34px, 8vw, 48px);
+    }
+
+    .sub { margin: 0 0 26px; text-align: center; color: var(--soft); font-size: 14px; }
+
+    .hidden { display: none !important; }
+
+    #single { display: flex; flex-direction: column; align-items: center; }
+
+    .polaroid {
+      width: min(100%, 520px);
+      padding: 14px 14px 0;
+      background: #FFFDF9;
+      border-radius: 4px;
+      box-shadow: 0 1px 0 rgba(200, 161, 94, .45), 0 24px 60px rgba(60, 40, 25, .25);
+      transform: rotate(-1deg);
+    }
+
+    .polaroid img { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; background: #e9dfd0; }
+
+    .polaroid p {
+      margin: 0;
+      height: 64px;
+      line-height: 64px;
+      text-align: center;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 24px;
+      color: var(--soft);
+    }
+
+    .actions { display: flex; flex-direction: column; gap: 12px; width: min(100%, 520px); margin-top: 30px; }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      min-height: 56px;
+      padding: 0 24px;
+      border-radius: 40px;
+      border: 1.5px solid var(--gold);
+      font: 500 22px var(--serif);
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .btn svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+
+    .btn.primary { background: linear-gradient(180deg, #C27455, var(--terracotta) 60%, var(--terracotta-dark)); color: #FFF8EE; border-color: rgba(230, 207, 152, .9); }
+    .btn.ghost { background: rgba(251, 247, 240, .7); color: var(--terracotta-dark); }
+    .btn:disabled { opacity: .6; }
+
+    .hint { margin: 14px 0 0; text-align: center; font-size: 13px; color: var(--soft); }
+
+    #grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 10px;
+    }
+
+    #grid button {
+      padding: 0;
+      border: 0;
+      border-radius: 6px;
+      overflow: hidden;
+      background: #e9dfd0;
+      aspect-ratio: 4 / 5;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(80, 60, 40, .15);
+    }
+
+    #grid img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0; transition: opacity .5s; }
+    #grid img.loaded { opacity: 1; }
+
+    .empty { grid-column: 1 / -1; text-align: center; padding: 60px 10px; font-family: var(--serif); font-size: 26px; color: var(--soft); }
+
+    #viewer {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+      background: rgba(30, 24, 20, .94);
+    }
+
+    #viewer img { max-width: 100%; max-height: calc(100vh - 170px); border-radius: 4px; box-shadow: 0 20px 60px rgba(0, 0, 0, .5); }
+
+    #viewer .bar { display: flex; gap: 10px; width: min(100%, 520px); }
+    #viewer .bar .btn { flex: 1; min-height: 52px; font-size: 20px; }
+    #viewer .ghost { background: rgba(255, 255, 255, .08); color: #FFF8EE; }
+
+    .nav {
+      position: absolute;
+      top: 50%;
+      width: 48px;
+      height: 48px;
+      margin-top: -60px;
+      border: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .12);
+      color: #fff;
+      font-size: 26px;
+      cursor: pointer;
+    }
+
+    .nav.prev { left: 10px; }
+    .nav.next { right: 10px; }
+
+    footer { padding: 10px 16px 40px; text-align: center; font-family: var(--serif); font-style: italic; font-size: 20px; color: var(--soft); }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="L&amp;C">
+    <p class="date">13 · 11 · 2026</p>
+    <div class="ornament"><i></i><b></b><i></i></div>
+  </header>
+
+  <main>
+    <section id="single" class="hidden">
+      <h1>Tu foto</h1>
+      <p class="sub">Guardala de recuerdo</p>
+      <div class="polaroid">
+        <img id="singleImg" alt="Tu foto">
+        <p>13 · 11 · 2026</p>
+      </div>
+      <div class="actions">
+        <button class="btn primary" id="singleDownload" type="button">
+          <svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
+          Descargar foto
+        </button>
+        <a class="btn ghost" href="./">Ver todas las fotos</a>
+      </div>
+      <p class="hint" id="singleHint"></p>
+    </section>
+
+    <section id="album">
+      <h1>Nuestras fotos</h1>
+      <p class="sub" id="albumSub">Todas las fotos de la cabina, en vivo</p>
+      <div id="grid"></div>
+    </section>
+  </main>
+
+  <footer>Gracias por acompañarnos</footer>
+
+  <div id="viewer" class="hidden">
+    <button class="nav prev" id="prev" type="button" aria-label="Anterior">‹</button>
+    <img id="viewerImg" alt="">
+    <button class="nav next" id="next" type="button" aria-label="Siguiente">›</button>
+    <div class="bar">
+      <button class="btn primary" id="viewerDownload" type="button">
+        <svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
+        Descargar
+      </button>
+      <button class="btn ghost" id="viewerClose" type="button">Cerrar</button>
+    </div>
+  </div>
+
+  <script>
+    const ALBUM = {
+      supabaseUrl: 'https://mrgzviwmwjucnxgdxozh.supabase.co',
+      key: 'sb_publishable_RlI41r_U4Tca-ve_peyTfg_ySoHSXP7',
+      bucket: 'fotos-boda',
+      prefix: 'boda_',
+      refreshSeconds: 45
+    };
+
+    const $ = id => document.getElementById(id);
+    const publicUrl = name => `${ALBUM.supabaseUrl}/storage/v1/object/public/${ALBUM.bucket}/${encodeURIComponent(name)}`;
+    const isIOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    let photos = [];
+    let current = -1;
+
+    async function download(name, button) {
+      const label = button.innerHTML;
+      button.disabled = true;
+      try {
+        const res = await fetch(publicUrl(name));
+        if (!res.ok) throw new Error(res.status);
+        const blob = await res.blob();
+        const file = new File([blob], name, { type: 'image/jpeg' });
+        if (navigator.canShare && navigator.canShare({ files: [file] }) && (isIOS || /Android/.test(navigator.userAgent))) {
+          await navigator.share({ files: [file] });
+        } else {
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = name;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+        }
+      } catch (e) {
+        if (e && e.name === 'AbortError') return;
+        location.href = publicUrl(name) + '?download=' + encodeURIComponent(name);
+      } finally {
+        button.disabled = false;
+        button.innerHTML = label;
+      }
+    }
+
+    async function listPhotos() {
+      const res = await fetch(`${ALBUM.supabaseUrl}/storage/v1/object/list/${ALBUM.bucket}`, {
+        method: 'POST',
+        headers: { apikey: ALBUM.key, Authorization: `Bearer ${ALBUM.key}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prefix: '', limit: 1000, offset: 0, sortBy: { column: 'name', order: 'desc' } })
+      });
+      if (!res.ok) throw new Error(res.status);
+      const items = await res.json();
+      return items.map(i => i.name).filter(n => n.startsWith(ALBUM.prefix) && n.endsWith('.jpg'));
+    }
+
+    function renderGrid() {
+      const grid = $('grid');
+      const known = new Set([...grid.querySelectorAll('button')].map(b => b.dataset.name));
+      if (!photos.length) {
+        grid.innerHTML = '<p class="empty">Las fotos van a aparecer acá durante la fiesta ✨</p>';
+        return;
+      }
+      grid.querySelector('.empty')?.remove();
+      photos.forEach((name, i) => {
+        if (known.has(name)) return;
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.dataset.name = name;
+        const img = document.createElement('img');
+        img.loading = 'lazy';
+        img.alt = 'Foto de la cabina';
+        img.onload = () => img.classList.add('loaded');
+        img.src = publicUrl(name);
+        b.appendChild(img);
+        b.addEventListener('click', () => openViewer(photos.indexOf(name)));
+        const after = grid.children[i];
+        grid.insertBefore(b, after || null);
+      });
+      $('albumSub').textContent = `${photos.length} ${photos.length === 1 ? 'foto' : 'fotos'} · se actualiza solo`;
+    }
+
+    async function refresh() {
+      try {
+        photos = await listPhotos();
+        renderGrid();
+      } catch (e) {
+        if (!photos.length) $('grid').innerHTML = '<p class="empty">No pudimos cargar el álbum. Probá de nuevo en un ratito.</p>';
+      }
+    }
+
+    function openViewer(i) {
+      current = i;
+      $('viewerImg').src = publicUrl(photos[i]);
+      $('viewer').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeViewer() {
+      $('viewer').classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    function step(d) {
+      if (!photos.length) return;
+      openViewer((current + d + photos.length) % photos.length);
+    }
+
+    $('viewerClose').addEventListener('click', closeViewer);
+    $('prev').addEventListener('click', () => step(-1));
+    $('next').addEventListener('click', () => step(1));
+    $('viewerDownload').addEventListener('click', e => download(photos[current], e.currentTarget));
+    document.addEventListener('keydown', e => {
+      if ($('viewer').classList.contains('hidden')) return;
+      if (e.key === 'Escape') closeViewer();
+      if (e.key === 'ArrowLeft') step(-1);
+      if (e.key === 'ArrowRight') step(1);
+    });
+    let touchX = null;
+    $('viewer').addEventListener('touchstart', e => (touchX = e.touches[0].clientX), { passive: true });
+    $('viewer').addEventListener('touchend', e => {
+      if (touchX === null) return;
+      const dx = e.changedTouches[0].clientX - touchX;
+      if (Math.abs(dx) > 50) step(dx < 0 ? 1 : -1);
+      touchX = null;
+    });
+
+    const single = new URLSearchParams(location.search).get('f');
+    if (single && /^[\w.-]+\.jpg$/.test(single)) {
+      $('single').classList.remove('hidden');
+      $('album').classList.add('hidden');
+      $('singleImg').src = publicUrl(single);
+      $('singleDownload').addEventListener('click', e => download(single, e.currentTarget));
+      $('singleHint').textContent = isIOS ? 'En iPhone elegí "Guardar imagen" para que quede en tus Fotos.' : '';
+    } else {
+      refresh();
+      setInterval(refresh, ALBUM.refreshSeconds * 1000);
+    }
+  </script>
+</body>
+</html>
