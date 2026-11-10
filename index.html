@@ -287,6 +287,13 @@
         return;
       }
       grid.querySelector('.empty')?.remove();
+      const keep = new Set(photos);
+      grid.querySelectorAll('button').forEach(b => {
+        if (!keep.has(b.dataset.name)) {
+          b.remove();
+          known.delete(b.dataset.name);
+        }
+      });
       photos.forEach((name, i) => {
         if (known.has(name)) return;
         const b = document.createElement('button');
